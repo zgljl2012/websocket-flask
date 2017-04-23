@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="Content-Language" content="zh-CN"/>
+        <title>实时消息</title>
+        <link rel="stylesheet" href="http://getbootstrap.com/2.3.2/assets/css/bootstrap.css">
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script type="text/javascript" charset="utf-8">
+        $(document).ready(function(){
+            if ("WebSocket" in window) {
+                ws = new WebSocket("ws://" + document.domain + ":5000/echo/");
+                ws.onmessage = function (msg) {
+                    $("#echo").html(msg.data)
+                };
+				$("#val").keyup(function(){
+					ws.send($("#val").val())
+				})
+            } else {
+                alert("WebSocket not supported");
+            }
+            window.onbeforeunload = function() {
+                ws.onclose = function () {
+                    console.log('unlodad')
+                };
+                ws.close()
+            };
+        });
+        </script>
+    </head>
+    <body>
+        <div class="header container">
+            <h1>实时消息</h1>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="span10">
+                    <div class="well align-center">
+                        <label for="chat_content">消息回显</label>
+						<input type="text" value="" id="val">
+						<div>
+							echo:<span id="echo"></span>
+						</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer container"></div>
+    </body>
+</html>
